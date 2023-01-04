@@ -1,8 +1,8 @@
 package main
 
 import (
-	"go_crud_api/routes"
-	"go_crud_api/utils"
+	"github.com/go_crud_api/routes"
+	"github.com/go_crud_api/utils"
 
 	"gorm.io/gorm"
 )

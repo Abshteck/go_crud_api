@@ -2,8 +2,9 @@ package utils
 
 import (
 	"fmt"
-	"go_crud_api/models"
 	"os"
+
+	"github.com/go_crud_api/models"
 
 	"github.com/joho/godotenv"
 	"gorm.io/driver/mysql"

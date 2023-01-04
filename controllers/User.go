@@ -3,8 +3,8 @@ package controllers
 import (
 	"net/http"
 
-	"go_crud_api/models"
-	"go_crud_api/utils"
+	"github.com/go_crud_api/models"
+	"github.com/go_crud_api/utils"
 
 	"github.com/gin-gonic/gin"
 	"gorm.io/gorm"
