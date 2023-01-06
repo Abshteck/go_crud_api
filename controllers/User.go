@@ -3,60 +3,62 @@ package controllers
 import (
 	"net/http"
 
-	"github.com/go_crud_api/models"
-	"github.com/go_crud_api/utils"
-
 	"github.com/gin-gonic/gin"
-	"gorm.io/gorm"
+	"github.com/go_crud_api/models"
 )
 
-var db *gorm.DB = utils.ConnectDB()
-
-func CreateUser(c *gin.Context) {
+func (res Resources) CreateUser(c *gin.Context) {
 	var user models.User
 	c.BindJSON(&user)
-	db.Create(&user)
-	c.JSON(http.StatusOK, gin.H{"data": user})
-}
 
-func GetAllUsers(c *gin.Context) {
-	var users []models.User
-	db.Find(&users)
-	c.JSON(http.StatusOK, gin.H{"data": users})
-}
+	usr, err := user.Create(res.db)
 
-func GetUser(c *gin.Context) {
-	var user models.User
-	id := c.Param("id")
-	db.First(&user, id)
-	if user.ID == 0 {
-		c.JSON(http.StatusNotFound, gin.H{"data": "Record not found!"})
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
-	c.JSON(http.StatusOK, gin.H{"data": user})
+
+	c.JSON(http.StatusOK, gin.H{"data": usr})
 }
 
-func UpdateUser(c *gin.Context) {
-	var user models.User
+func (res Resources) GetUser(c *gin.Context) {
 	id := c.Param("id")
-	db.First(&user, id)
-	if user.ID == 0 {
-		c.JSON(http.StatusNotFound, gin.H{"data": "Record not found!"})
+	var user models.User
+
+	usr, err := user.Get(res.db, id)
+
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
+
+	c.JSON(http.StatusOK, gin.H{"data": usr})
+
+}
+
+func (res Resources) UpdateUser(c *gin.Context) {
+	id := c.Param("id")
+	var user models.User
+
 	c.BindJSON(&user)
-	db.Save(&user)
-	c.JSON(http.StatusOK, gin.H{"data": user})
-}
 
-func DeleteUser(c *gin.Context) {
-	var user models.User
-	id := c.Param("id")
-	db.First(&user, id)
-	if user.ID == 0 {
-		c.JSON(http.StatusNotFound, gin.H{"data": "Record not found!"})
+	usr, err := user.Edit(res.db, id)
+
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
-	db.Delete(&user)
-	c.JSON(http.StatusOK, gin.H{"data": "Record deleted successfully!"})
+
+	c.JSON(http.StatusOK, gin.H{"data": usr})
+}
+func (res Resources) DeleteUser(c *gin.Context) {
+	id := c.Param("id")
+	var user models.User
+
+	_, err := user.Delete(res.db, id)
+
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
 }

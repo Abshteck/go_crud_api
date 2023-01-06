@@ -15,5 +15,5 @@ func main() {
 	defer utils.DisconnectDB(db)
 
 	//run all routes
-	routes.Routes()
+	routes.SetupRoutes(db)
 }

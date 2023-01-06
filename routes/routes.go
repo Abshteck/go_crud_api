@@ -4,15 +4,19 @@ import (
 	"github.com/go_crud_api/controllers"
 
 	"github.com/gin-gonic/gin"
+	"gorm.io/gorm"
 )
 
-func Routes() {
-	route := gin.Default()
+func SetupRoutes(db *gorm.DB) *gin.Engine {
 
-	route.POST("/user", controllers.CreateUser)
-	route.GET("/user", controllers.GetAllUsers)
-	route.PUT("/user/:id", controllers.UpdateUser)
-	route.DELETE("/user/:id", controllers.DeleteUser)
+	res := controllers.NewConfig(db)
+	router := gin.Default()
 
-	route.Run()
+	router.POST("/user", res.CreateUser)
+	router.GET("/user/:id", res.GetUser)
+	router.PUT("/user/:id", res.UpdateUser)
+	router.DELETE("/user/:id", res.DeleteUser)
+
+	router.Run()
+	return router
 }
